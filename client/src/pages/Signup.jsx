@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import API from '../api/axios';
-import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
   const [username, setUsername] = useState('');
@@ -13,28 +13,55 @@ export default function Signup() {
     setMsg(null);
     try {
       const res = await API.post('/signup', { username, password });
-      setMsg({ type: 'success', text: res.data.message || 'Registered' });
-      setTimeout(() => nav('/'), 800);
+      setMsg('Account created! Redirecting...');
+      setTimeout(() => nav('/'), 1200);
     } catch (err) {
-      setMsg({ type: 'error', text: err?.response?.data?.message || 'Signup failed' });
+      setMsg(err?.response?.data?.message || 'Signup failed');
     }
   };
 
   return (
-    <div style={{ maxWidth: 420 }}>
-      <h2>Sign Up</h2>
-      {msg && <div style={{ color: msg.type === 'error' ? 'red' : 'green' }}>{msg.text}</div>}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 8 }}>
-          <label>Username</label><br/>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </div>
-        <div style={{ marginBottom: 8 }}>
-          <label>Password</label><br/>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
+    <div className="flex items-center justify-center h-screen bg-mid">
+      <div className="bg-dark rounded-2xl p-8 shadow-xl w-96">
+        <h2 className="text-2xl font-bold mb-6 text-center text-light">Create Account</h2>
+
+        {msg && <p className="text-accent mb-4 text-center">{msg}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block mb-1 text-sm text-light/80">Username</label>
+            <input
+              className="w-full p-2 rounded-md bg-mid text-light focus:outline-none focus:ring-2 focus:ring-accent"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-sm text-light/80">Password</label>
+            <input
+              type="password"
+              className="w-full p-2 rounded-md bg-mid text-light focus:outline-none focus:ring-2 focus:ring-accent"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-accent text-dark font-semibold py-2 rounded-md hover:opacity-90 transition"
+          >
+            Sign Up
+          </button>
+        </form>
+
+        <p className="text-center text-sm mt-4 text-light/70">
+          Already have an account?{' '}
+          <Link to="/" className="text-accent hover:underline">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
